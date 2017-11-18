@@ -175,3 +175,23 @@ Links are:
 - static
 
 Stopping a linked container breaks the link, since ip address will be freed. This means that we will need to restart dependent containers to re-establish links if a linked container fails.
+
+# Skipping the Isolation chapter for now
+
+# Packaging for Distribution
+Use `docker commit {containerName} {newImageName}` to create new image from {containerName}. The `-a` flag sets the author, the `-m` flag adds a commit message.
+
+Using `--entrypoint {cmd}` with `run` will run the entrypoint when run is invoked, so use that and then commit to auto-run a command on startup.
+
+`docker export --output {file} {containerName}` will export an container's contents to a file.
+
+`docker tag`  ...
+
+
+----
+# Bits and pieces
+## Create postgres db and connect
+(see https://hub.docker.com/_/postgres/)
+docker run --name psql -e POSTGRES_PASSWORD=password -d -p 5432 postgres
+
+psql -h 127.0.0.1 -p 32769 -U postgres
