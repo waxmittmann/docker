@@ -176,7 +176,7 @@ Links are:
 
 Stopping a linked container breaks the link, since ip address will be freed. This means that we will need to restart dependent containers to re-establish links if a linked container fails.
 
-# Skipping the Isolation chapter for now
+# ... skipping the Isolation chapter for now ...
 
 # Packaging for Distribution
 Use `docker commit {containerName} {newImageName}` to create new image from {containerName}. The `-a` flag sets the author, the `-m` flag adds a commit message.
@@ -186,6 +186,54 @@ Using `--entrypoint {cmd}` with `run` will run the entrypoint when run is invoke
 `docker export --output {file} {containerName}` will export an container's contents to a file.
 
 `docker tag`  ...
+
+# Building with Dockerfiles
+```
+docker build --tag {repository, e.g: ubuntu-git:auto} {path to Dockerfile}
+```
+(can use --file to specify the name of the dockerfile)
+
+Each command creates a new layer for the final image, so combine steps into single command where possible.
+
+## Dockerfile instructions
+`FROM {image}`: the base of the new image
+`MAINTAINER {maintainer}`: sets Author value in image metadata
+`COPY [{source}], {dest}`: copies files (note all perms are set to root)
+`VOLUME [{destPath}]`: defines mount point for volume
+`RUN {cmd}`: run a command
+`ENV [{variableName} "{variableValue}"]`: set environmental variable(s); these can also be used in other instructions
+`LABEL {labelKey} {labelValue}`: set label kv pairs on image
+`WORKDIR {dir}`: sets working directory for container
+`EXPOSE [{port}]`: expose the container's ports
+`ENTRYPOINT ([{shell cmd}] | {cmd}[{arg}]`: command and exec forms
+`CMD [{arg}]`: argument list for entrypoint
+`ONBUILD {instruction}`: executed if image is used as base for another build (after FROM, before instruction following FROM)
+
+## Thing to check on container startup
+- Presumed links (and aliases)
+- Environment variables
+- Network access
+- Network port availability
+- Root file system mount parameters (read-write or read-only)
+- Volumes
+- Current user
+
+## Init process
+Unix-based sytems usually use init process which starts other system services. Often useful to use (lightweight) init processes with containers.
+
+## Content-addressable image identifier
+```
+FROM {imageName}@sha256:{sha}
+```
+will lock the image to that specific sha version
+
+## ... skipping hardening bits for now ...
+
+# ... skipping distribution for now ...
+
+# ... skipping  customized registries for now ...
+
+# Multi-container and Multi-Host environments
 
 
 ----
