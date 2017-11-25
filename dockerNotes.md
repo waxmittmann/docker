@@ -233,8 +233,36 @@ will lock the image to that specific sha version
 
 # ... skipping  customized registries for now ...
 
-# Multi-container and Multi-Host environments
+# Multi-container and Multi-Host environments - Declarative environments with Docker Compose
 
+----
+Updates
+# User-defined networks
+`--link` is deprecated!
+
+1) Create network
+```
+docker network create --driver bridge isolated_nw
+docker network inspect isolated_nw
+```
+
+2) Create containers on the network
+```
+docker run --network=isolated_nw -itd --name=c1 ubuntu
+docker run --network=isolated_nw -itd --name=c2 ubuntu
+```
+
+3) Test
+Show what's on the network:
+```
+docker network inspect isolated_nw
+```
+
+And after installing ping, this should work on either container:
+```
+ping c1
+ping c2
+```
 
 ----
 # Bits and pieces
@@ -243,3 +271,19 @@ will lock the image to that specific sha version
 docker run --name psql -e POSTGRES_PASSWORD=password -d -p 5432 postgres
 
 psql -h 127.0.0.1 -p 32769 -U postgres
+
+## Creating a volume and inserting / reading data from it using a container
+docker volume create --name test
+
+docker run -it --mount source=test,target=/test ubuntu:latest /bin/bash
+
+docker cp {containerName} {file} /test
+
+./clean.sh
+
+docker run -it --mount source=test,target=/test ubuntu:latest
+
+## Cleaning up
+*warning: this will remove EVERYTHING (images, containers, volumes, ...); todo: Check whether we can get something less everything.*
+
+`docker system prune -a -f`
